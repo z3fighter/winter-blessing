@@ -2,115 +2,233 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>荣幸-立冬-幸福</title>
-    <!-- 使用更可靠的CDN资源 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/tailwindcss/3.4.3/tailwind.min.js"></script>
-    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#E63946',
-                        secondary: '#457B9D',
-                        warm: '#F1FAEE',
-                        snow: '#FFFFFF',
-                    },
-                    fontFamily: {
-                        chinese: ['"Microsoft YaHei"', '"PingFang SC"', 'sans-serif'],
-                    },
-                },
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 颜色变量 */
+        :root {
+            --primary: #E63946;
+            --secondary: #457B9D;
+            --warm: #F1FAEE;
+            --snow: #FFFFFF;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            overflow: hidden;
+            min-height: 100vh;
+            color: white;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 核心样式 */
+        .bg-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .snowflake {
+            position: absolute;
+            top: -10%;
+            background-color: white;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: fall linear infinite;
+            opacity: 0.8;
+            z-index: 999;
+        }
+        
+        .popup {
+            position: fixed;
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 228, 181, 0.95));
+            border-radius: 20px;
+            padding: 15px 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3);
+            transform: scale(0);
+            animation: popupAnimation 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            /* 移动端适配 */
+            width: 85vw;
+            max-width: 280px;
+            word-wrap: break-word;
+        }
+        
+        .popup::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: inherit;
+            border-radius: 5px;
+            transform: translateX(-50%) rotate(45deg);
+            border-top: 2px solid rgba(255, 255, 255, 0.6);
+            border-left: 2px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        @keyframes fall {
+            to {
+                top: 100%;
+                transform: translateY(0) rotate(360deg);
             }
         }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .bg-blur {
-                backdrop-filter: blur(8px);
-            }
-            .text-shadow {
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            }
-            .snowflake {
-                position: absolute;
-                top: -10%;
-                background-color: white;
-                border-radius: 50%;
-                filter: blur(1px);
-                animation: fall linear infinite;
-                opacity: 0.8;
-                z-index: 999;
-            }
-            .popup {
-                position: fixed;
-                background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 228, 181, 0.95));
-                border-radius: 20px;
-                padding: 15px 20px;
-                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3);
+        
+        @keyframes popupAnimation {
+            0% {
                 transform: scale(0);
-                animation: popupAnimation 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-                z-index: 1000;
-                backdrop-filter: blur(8px);
-                border: 2px solid rgba(255, 255, 255, 0.6);
-                min-width: 180px;
-                max-width: 280px;
-                /* 移动端适配 */
-                width: 70vw;
-                max-width: 280px;
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* 主容器样式 */
+        .main-container {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .content-box {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .content-box h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .blessing-content {
+            background: rgba(241, 250, 238, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .blessing-content p {
+            font-size: clamp(1rem, 4vw, 1.25rem);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .blessing-content ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        
+        .blessing-content li {
+            margin-bottom: 8px;
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .music-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .music-btn:hover,
+        .music-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .content-box {
+                padding: 15px;
             }
             
-            .popup::before {
-                content: '';
-                position: absolute;
-                top: -15px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 30px;
-                height: 30px;
-                background: inherit;
-                border-radius: 5px;
-                rotate: 45deg;
-                border-top: 2px solid rgba(255, 255, 255, 0.6);
-                border-left: 2px solid rgba(255, 255, 255, 0.6);
+            .blessing-content {
+                padding: 12px;
             }
-            @keyframes fall {
-                to {
-                    top: 100%;
-                    transform: translateY(0) rotate(360deg);
-                }
+            
+            .popup {
+                padding: 12px 15px;
+                width: 90vw;
             }
-            @keyframes popupAnimation {
-                0% {
-                    transform: scale(0);
-                    opacity: 0;
-                }
-                100% {
-                    transform: scale(1);
-                    opacity: 1;
-                }
+            
+            .music-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
             }
-            .bg-slide {
-                animation: slideBackground 20s infinite;
-                background-size: cover;
-                background-position: center;
-                transition: background-image 1s ease-in-out;
-            }
-            @keyframes slideBackground {
-                0%, 100% {
-                    background-position: 0% 0%;
-                }
-                50% {
-                    background-position: 100% 100%;
-                }
-            }
+        }
+        
+        /* 背景视频 */
+        #background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 雪花容器 */
+        #snow-container {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        /* 底部文本 */
+        .footer-text {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
-<body class="font-chinese overflow-hidden min-h-screen">
+<body>
     <!-- 背景音乐 -->
     <!-- 将音频源路径改为相对路径 -->
     <audio id="bgMusic" loop>
@@ -118,53 +236,52 @@
     </audio>
     
     <!-- 将视频源路径改为相对路径 -->
-    <video id="background" class="fixed inset-0 z-0 object-cover w-full h-full" autoplay muted loop playsinline>
+    <video id="background" autoplay muted loop playsinline>
         <source src="荣幸.mp4" type="video/mp4">
     </video>
     
     <!-- 雪花容器 -->
-    <div id="snow-container" class="fixed inset-0 z-10 pointer-events-none"></div>
+    <div id="snow-container"></div>
     
     <!-- 主内容 -->
-    <div class="relative z-20 flex flex-col items-center justify-center min-h-screen text-white">
-        <div class="bg-blur bg-black/30 p-8 rounded-2xl shadow-xl max-w-2xl w-full mx-4">
-            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-center mb-6 text-shadow">
-                <i class="fa fa-snowflake-o text-snow mr-3"></i>立冬祝福
-                <i class="fa fa-snowflake-o text-snow ml-3"></i>
+    <div class="main-container">
+        <div class="content-box">
+            <h1 class="text-shadow">
+                ❄️ 立冬祝福 ❄️
             </h1>
             
-            <div class="bg-warm/20 p-6 rounded-xl mb-8">
-                <p class="text-[clamp(1rem,2vw,1.25rem)] leading-relaxed">
+            <div class="blessing-content">
+                <p>
                     荣幸：<br><br>
                     冬日已至。立冬时节，hopefully：
                 </p>
-                <ul class="list-disc pl-6 mt-4 space-y-2">
+                <ul>
                     <li>小手是一直暖暖的！</li>
                     <li>钱包是一直鼓鼓的!</li>
                     <li>心情是一直乐乐的!</li>
                     <li>王者是一直Viciory的!</li>
                     <li>LOVE身边是有我的!!!</li>
                 </ul>
-                <p class="mt-4">
+                <p>
                     山有木兮木有枝，心悦君兮君不知。。
                 </p>
-                <p class="mt-4 text-center font-bold text-lg">
+                <p style="text-align: center; font-weight: bold; margin-top: 15px;">
                     立冬快乐！
                 </p>
-                <p class="mt-4 text-right italic">
+                <p style="text-align: right; font-style: italic; margin-top: 15px;">
                     - 永远的朋友
                 </p>
             </div>
             
-            <div class="flex justify-center">
-                <button id="musicToggle" class="flex items-center gap-2 bg-white/20 hover:bg-white/30 py-3 px-6 rounded-full transition-all duration-300">
-                    <i id="musicIcon" class="fa fa-volume-up"></i>
+            <div class="btn-container">
+                <button id="musicToggle" class="music-btn">
+                    <span id="musicIcon">🔊</span>
                     <span>背景音乐</span>
                 </button>
             </div>
         </div>
         
-        <div class="mt-8 text-sm text-white/80">
+        <div class="footer-text">
             <p>雪花❄️</p>
         </div>
     </div>
@@ -219,10 +336,10 @@
                 bgMusic.play().catch(e => {
                     console.log('音频播放需要用户交互');
                 });
-                musicIcon.className = 'fa fa-volume-up';
+                musicIcon.textContent = '🔊';
             } else {
                 bgMusic.pause();
-                musicIcon.className = 'fa fa-volume-off';
+                musicIcon.textContent = '🔇';
             }
         });
         
@@ -232,7 +349,7 @@
                 bgMusic.play().catch(e => {
                     console.log('音频播放需要用户交互');
                 });
-                musicIcon.className = 'fa fa-volume-up';
+                musicIcon.textContent = '🔊';
             }
         }, { once: true });
         
@@ -241,6 +358,15 @@
             bgMusic.play().catch(e => {
                 console.log('自动播放被阻止，等待用户交互');
             });
+        });
+        
+        // 移动端优化：监听设备旋转
+        window.addEventListener('resize', () => {
+            // 重新检测是否为移动设备
+            const newIsMobile = window.innerWidth < 768;
+            if (newIsMobile !== isMobile) {
+                location.reload(); // 重新加载页面以应用正确的移动端设置
+            }
         });
         
         // 创建雪花效果
@@ -277,37 +403,46 @@
             }, duration * 1000);
         }
         
-        // 自动生成雪花 - 减少移动设备上的频率
-        const isMobile = window.innerWidth < 768;
-        setInterval(createSnowflake, isMobile ? 500 : 200);
+        // 检测是否为移动设备，使用更精确的检测方法
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
         
-        // 点击屏幕生成更多雪花
+        // 自动生成雪花 - 减少移动设备上的频率和数量
+        setInterval(createSnowflake, isMobile ? 1000 : 300);
+        
+        // 点击屏幕生成更多雪花 - 移动设备减少数量
         document.addEventListener('click', () => {
-            for (let i = 0; i < 10; i++) {
+            const count = isMobile ? 5 : 10;
+            for (let i = 0; i < count; i++) {
                 createSnowflake();
             }
-        });
+        }, { passive: true });
         
         // 创建祝福弹窗 - 美化样式并使用男生对女生的慰问语
         function createBlessingPopup() {
+            // 限制同时存在的弹窗数量，防止性能问题
+            const existingPopups = document.querySelectorAll('.popup');
+            if (existingPopups.length > (isMobile ? 5 : 10)) {
+                return;
+            }
+            
             const popup = document.createElement('div');
             popup.className = 'popup';
             
             // 随机祝福
             const blessing = blessings[Math.floor(Math.random() * blessings.length)];
             
-            // 使用不同的图标增加趣味性
-            const icons = ['fa-heart', 'fa-heartbeat', 'fa-star', 'fa-sun-o', 'fa-coffee', 'fa-gift', 'fa-heart-o', 'fa-star-o'];
+            // 使用emoji替代Font Awesome图标
+            const icons = ['❤️', '💖', '⭐', '☀️', '☕', '🎁', '💕', '🌟'];
             const randomIcon = icons[Math.floor(Math.random() * icons.length)];
             
             popup.innerHTML = `
-                <div class="relative">
-                    <div class="absolute -top-4 -right-4 text-2xl text-primary opacity-80">
-                        <i class="fa ${randomIcon}"></i>
+                <div style="position: relative;">
+                    <div style="position: absolute; top: -15px; right: -15px; font-size: 20px; color: #E63946; opacity: 0.8;">
+                        ${randomIcon}
                     </div>
-                    <div class="flex items-center gap-3 p-2">
-                        <span class="text-primary text-lg">💖</span>
-                        <p class="text-gray-800 font-medium leading-relaxed" style="font-family: 'Microsoft YaHei', sans-serif;">
+                    <div style="display: flex; align-items: flex-start; gap: 10px; padding: 5px;">
+                        <span style="color: #E63946; font-size: 18px;">💖</span>
+                        <p style="color: #333; font-weight: 500; line-height: 1.5; font-family: 'Microsoft YaHei', sans-serif; margin: 0;">
                             ${blessing}
                         </p>
                     </div>
@@ -315,28 +450,41 @@
             `;
             
             // 随机位置 - 确保不会超出屏幕
-            const popupWidth = isMobile ? 220 : 280; // 调整弹窗宽度估计值
-            const popupHeight = isMobile ? 100 : 120; // 调整弹窗高度估计值
+            const popupWidth = isMobile ? 280 : 320;
+            const popupHeight = isMobile ? 120 : 140;
             const left = Math.random() * (window.innerWidth - popupWidth);
             const top = Math.random() * (window.innerHeight - popupHeight);
             popup.style.left = `${left}px`;
             popup.style.top = `${top}px`;
             
             // 随机大小 - 移动设备使用更大的基础缩放
-            const scale = isMobile ? (Math.random() * 0.2 + 0.95) : (Math.random() * 0.3 + 0.9);
+            const scale = isMobile ? (Math.random() * 0.1 + 0.95) : (Math.random() * 0.2 + 0.9);
             popup.style.transform = `scale(${scale})`;
             
             // 添加随机旋转角度使布局更自然
-            const rotation = Math.random() * 10 - 10; // -5度到5度之间的随机旋转
+            const rotation = Math.random() * 8 - 4; // -4度到4度之间的随机旋转
             popup.style.transform += ` rotate(${rotation}deg)`;
             
             // 增加z-index使新弹窗在上方
-            popup.style.zIndex = 1000 + document.querySelectorAll('.popup').length;
+            popup.style.zIndex = 1000 + existingPopups.length;
             
-            // 添加hover效果
+            // 添加触摸和悬停效果
             popup.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+            
+            // 触摸效果（移动设备）
+            popup.addEventListener('touchstart', function() {
+                this.style.transform = `scale(${scale * 1.15}) rotate(${rotation}deg)`;
+                this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(236, 72, 153, 0.4)';
+            }, { passive: true });
+            
+            popup.addEventListener('touchend', function() {
+                this.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+                this.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3)';
+            }, { passive: true });
+            
+            // 鼠标悬停效果
             popup.addEventListener('mouseenter', function() {
-                this.style.transform = `scale(${scale * 1.25}) rotate(${rotation}deg)`;
+                this.style.transform = `scale(${scale * 1.15}) rotate(${rotation}deg)`;
                 this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(236, 72, 153, 0.4)';
             });
             
@@ -346,16 +494,47 @@
             });
             
             document.body.appendChild(popup);
+            
+            // 添加自动移除机制，防止内存泄漏
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    // 淡出动画
+                    popup.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    popup.style.opacity = '0';
+                    popup.style.transform = `scale(${scale * 0.8}) rotate(${rotation}deg)`;
+                    
+                    setTimeout(() => {
+                        if (popup.parentNode) {
+                            popup.remove();
+                        }
+                    }, 500);
+                }
+            }, isMobile ? 5000 : 8000);
         }
         
         // 定期创建祝福弹窗 - 网页打开3秒后才开始弹窗，移动设备减少频率
         setTimeout(() => {
-            setInterval(createBlessingPopup, isMobile ? 1500 : 700);
+            // 移动设备降低弹窗频率
+            setInterval(createBlessingPopup, isMobile ? 3000 : 1000);
         }, 3000);
         
-        // 页面加载时生成初始雪花
+        // 性能优化：添加可见性变化监听
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // 页面不可见时暂停动画和音乐
+                bgMusic.pause();
+            } else {
+                // 页面可见时恢复
+                if (!bgMusic.paused) {
+                    bgMusic.play();
+                }
+            }
+        });
+        
+        // 页面加载时生成初始雪花 - 移动设备减少数量
         window.addEventListener('load', () => {
-            for (let i = 0; i < 50; i++) {
+            const initialSnowCount = isMobile ? 20 : 50;
+            for (let i = 0; i < initialSnowCount; i++) {
                 createSnowflake();
             }
         });
