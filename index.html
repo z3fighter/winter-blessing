@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>荣幸-立冬-幸福</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E63946',
+                        secondary: '#457B9D',
+                        warm: '#F1FAEE',
+                        snow: '#FFFFFF',
+                    },
+                    fontFamily: {
+                        chinese: ['"Microsoft YaHei"', '"PingFang SC"', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .snowflake {
+                position: absolute;
+                top: -10%;
+                background-color: white;
+                border-radius: 50%;
+                filter: blur(1px);
+                animation: fall linear infinite;
+                opacity: 0.8;
+                z-index: 999;
+            }
+            .popup {
+                position: fixed;
+                background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 228, 181, 0.95));
+                border-radius: 20px;
+                padding: 25px 30px;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3);
+                transform: scale(0);
+                animation: popupAnimation 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                z-index: 1000;
+                backdrop-filter: blur(8px);
+                border: 2px solid rgba(255, 255, 255, 0.6);
+                min-width: 200px;
+                max-width: 300px;
+            }
+            
+            .popup::before {
+                content: '';
+                position: absolute;
+                top: -15px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 30px;
+                height: 30px;
+                background: inherit;
+                border-radius: 5px;
+                rotate: 45deg;
+                border-top: 2px solid rgba(255, 255, 255, 0.6);
+                border-left: 2px solid rgba(255, 255, 255, 0.6);
+            }
+            @keyframes fall {
+                to {
+                    top: 100%;
+                    transform: translateY(0) rotate(360deg);
+                }
+            }
+            @keyframes popupAnimation {
+                0% {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+            .bg-slide {
+                animation: slideBackground 20s infinite;
+                background-size: cover;
+                background-position: center;
+                transition: background-image 1s ease-in-out;
+            }
+            @keyframes slideBackground {
+                0%, 100% {
+                    background-position: 0% 0%;
+                }
+                50% {
+                    background-position: 100% 100%;
+                }
+            }
+        }
+    </style>
+</head>
+<body class="font-chinese overflow-hidden min-h-screen">
+    <!-- 背景音乐 -->
+    <!-- 将音频源路径改为相对路径 -->
+    <audio id="bgMusic" loop>
+        <source src="配音.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 将视频源路径改为相对路径 -->
+    <video id="background" class="fixed inset-0 z-0 object-cover w-full h-full" autoplay muted loop playsinline>
+        <source src="荣幸.mp4" type="video/mp4">
+    </video>
+    
+    <!-- 雪花容器 -->
+    <div id="snow-container" class="fixed inset-0 z-10 pointer-events-none"></div>
+    
+    <!-- 主内容 -->
+    <div class="relative z-20 flex flex-col items-center justify-center min-h-screen text-white">
+        <div class="bg-blur bg-black/30 p-8 rounded-2xl shadow-xl max-w-2xl w-full mx-4">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-center mb-6 text-shadow">
+                <i class="fa fa-snowflake-o text-snow mr-3"></i>立冬祝福
+                <i class="fa fa-snowflake-o text-snow ml-3"></i>
+            </h1>
+            
+            <div class="bg-warm/20 p-6 rounded-xl mb-8">
+                <p class="text-[clamp(1rem,2vw,1.25rem)] leading-relaxed">
+                    荣幸：<br><br>
+                    冬日已至。立冬时节，hopefully：
+                </p>
+                <ul class="list-disc pl-6 mt-4 space-y-2">
+                    <li>小手是一直暖暖的！</li>
+                    <li>钱包是一直鼓鼓的!</li>
+                    <li>心情是一直乐乐的!</li>
+                    <li>王者是一直Viciory的!</li>
+                    <li>LOVE身边是有我的!!!</li>
+                </ul>
+                <p class="mt-4">
+                    山有木兮木有枝，心悦君兮君不知。。
+                </p>
+                <p class="mt-4 text-center font-bold text-lg">
+                    立冬快乐！
+                </p>
+                <p class="mt-4 text-right italic">
+                    - 永远的朋友
+                </p>
+            </div>
+            
+            <div class="flex justify-center">
+                <button id="musicToggle" class="flex items-center gap-2 bg-white/20 hover:bg-white/30 py-3 px-6 rounded-full transition-all duration-300">
+                    <i id="musicIcon" class="fa fa-volume-up"></i>
+                    <span>背景音乐</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="mt-8 text-sm text-white/80">
+            <p>雪花❄️</p>
+        </div>
+    </div>
+
+    <script>
+        // 祝福短语数组 - 更新为男生对女生的立冬慰问
+        const blessings = [
+            "荣幸，立冬了，记得多穿点，别冻着我的小宝贝",
+            "亲爱的，今天立冬，你的手还冷吗？我想温暖你整个冬天",
+            "荣幸，天气凉了，晚上睡觉要盖好被子哦",
+            "幸幸，立冬了多穿点哦！我不在你身边要学会照顾自己",
+            "亲爱的，立冬快乐，希望我的问候能让你感到一丝温暖",
+            "宝贝，今天开始降温了，记得把我送你的围巾戴上",
+            "丫头，立冬了，记得多喝热水，别让我担心你",
+            "亲爱的，天气变冷了，我不在你边边要好好照顾自己",
+            "小傻瓜，立冬了，记得加衣服，我会在远方想你的",
+            "宝贝，立冬快乐，虽然不能陪在你边边，但我的心一直和你在一起",
+            "亲爱的，今天立冬，想你的心情又多了一分牵挂",
+            "丫头，天凉了，你是我的小太阳，温暖了我的整个世界",
+            "宝贝，立冬了，记得按时吃饭，别让自己饿着",
+            "亲爱的，风大了，出门记得戴帽子，别吹感冒了",
+            "丫头，立冬快乐，愿我的爱能温暖你整个冬天",
+            "宝贝，今天开始降温，记得带上我给你买的手套",
+            "亲爱的，立冬了，晚上早点睡，别熬夜了",
+            "丫头，天越来越冷了，我不在你边边要好好保暖",
+            "宝贝，立冬快乐，虽然不能为你暖手，但我的心永远为你跳动",
+            "亲爱的，天气变冷了，记得喝我给你买的保温杯",
+            "丫头，立冬了，希望我的问候能像阳光一样温暖你",
+            "宝贝，今天立冬，想你了，你有没有想我？",
+            "风很大，出门要小心，别被吹跑了我的小宝贝",
+            "立冬快乐，你的笑容是我冬天最温暖的阳光",
+            "宝贝，天凉了，记得加衣服，我会一直想你的",
+            "亲爱的，立冬了，希望我们能早日见面，我想抱抱你",
+            "你是我的牵挂，要好好的",
+            "宝贝，立冬快乐，爱你的心永远不变",
+            "亲爱的，今天立冬，希望我的祝福能给你带来温暖",
+            "幸，风大了，记得关紧窗户，别让冷风吹到你"
+        ];
+
+        const background = document.getElementById('background');
+        const snowContainer = document.getElementById('snow-container');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+        
+        // 初始化背景音乐
+        bgMusic.volume = 0.5;
+        
+        // 音乐控制
+        musicToggle.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => {
+                    console.log('音频播放需要用户交互');
+                });
+                musicIcon.className = 'fa fa-volume-up';
+            } else {
+                bgMusic.pause();
+                musicIcon.className = 'fa fa-volume-off';
+            }
+        });
+        
+        // 尝试在用户交互后自动播放背景音乐（浏览器自动播放策略要求）
+        document.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => {
+                    console.log('音频播放需要用户交互');
+                });
+                musicIcon.className = 'fa fa-volume-up';
+            }
+        }, { once: true });
+        
+        // 页面加载后尝试自动播放，但可能会被浏览器阻止
+        window.addEventListener('load', () => {
+            bgMusic.play().catch(e => {
+                console.log('自动播放被阻止，等待用户交互');
+            });
+        });
+        
+        // 创建雪花效果
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            
+            // 随机大小
+            const size = Math.random() * 10 + 5;
+            snowflake.style.width = `${size}px`;
+            snowflake.style.height = `${size}px`;
+            
+            // 随机位置
+            snowflake.style.left = `${Math.random() * 100}vw`;
+            
+            // 随机透明度
+            snowflake.style.opacity = Math.random() * 0.8 + 0.2;
+            
+            // 随机降落速度
+            const duration = Math.random() * 10 + 10;
+            snowflake.style.animationDuration = `${duration}s`;
+            
+            // 随机延迟
+            snowflake.style.animationDelay = `${Math.random() * 5}s`;
+            
+            // 随机缩放
+            snowflake.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+            
+            snowContainer.appendChild(snowflake);
+            
+            // 移除雪花
+            setTimeout(() => {
+                snowflake.remove();
+            }, duration * 1000);
+        }
+        
+        // 自动生成雪花
+        setInterval(createSnowflake, 200);
+        
+        // 点击屏幕生成更多雪花
+        document.addEventListener('click', () => {
+            for (let i = 0; i < 10; i++) {
+                createSnowflake();
+            }
+        });
+        
+        // 创建祝福弹窗 - 美化样式并使用男生对女生的慰问语
+        function createBlessingPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            
+            // 随机祝福
+            const blessing = blessings[Math.floor(Math.random() * blessings.length)];
+            
+            // 使用不同的图标增加趣味性
+            const icons = ['fa-heart', 'fa-heartbeat', 'fa-star', 'fa-sun-o', 'fa-coffee', 'fa-gift', 'fa-heart-o', 'fa-star-o'];
+            const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+            
+            popup.innerHTML = `
+                <div class="relative">
+                    <div class="absolute -top-4 -right-4 text-2xl text-primary opacity-80">
+                        <i class="fa ${randomIcon}"></i>
+                    </div>
+                    <div class="flex items-center gap-3 p-2">
+                        <span class="text-primary text-lg">💖</span>
+                        <p class="text-gray-800 font-medium leading-relaxed" style="font-family: 'Microsoft YaHei', sans-serif;">
+                            ${blessing}
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            // 随机位置 - 确保不会超出屏幕
+            const popupWidth = 280; // 调整弹窗宽度估计值
+            const popupHeight = 120; // 调整弹窗高度估计值
+            const left = Math.random() * (window.innerWidth - popupWidth);
+            const top = Math.random() * (window.innerHeight - popupHeight);
+            popup.style.left = `${left}px`;
+            popup.style.top = `${top}px`;
+            
+            // 随机大小
+            const scale = Math.random() * 0.3 + 0.9; // 增加最小缩放比例
+            popup.style.transform = `scale(${scale})`;
+            
+            // 添加随机旋转角度使布局更自然
+            const rotation = Math.random() * 10 - 10; // -5度到5度之间的随机旋转
+            popup.style.transform += ` rotate(${rotation}deg)`;
+            
+            // 增加z-index使新弹窗在上方
+            popup.style.zIndex = 1000 + document.querySelectorAll('.popup').length;
+            
+            // 添加hover效果
+            popup.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+            popup.addEventListener('mouseenter', function() {
+                this.style.transform = `scale(${scale * 1.25}) rotate(${rotation}deg)`;
+                this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(236, 72, 153, 0.4)';
+            });
+            
+            popup.addEventListener('mouseleave', function() {
+                this.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+                this.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3)';
+            });
+            
+            document.body.appendChild(popup);
+        }
+        
+        // 定期创建祝福弹窗 - 网页打开3秒后才开始弹窗
+        setTimeout(() => {
+            setInterval(createBlessingPopup, 700);
+        }, 3000);
+        
+        // 页面加载时生成初始雪花
+        window.addEventListener('load', () => {
+            for (let i = 0; i < 50; i++) {
+                createSnowflake();
+            }
+        });
+    </script>
+</body>
+</html>
