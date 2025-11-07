@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>荣幸-立冬-幸福</title>
-    <!-- 使用国内CDN以确保无需VPN即可访问 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/tailwindcss/3.3.2/tailwind.min.js"></script>
+    <!-- 使用更可靠的CDN资源 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/tailwindcss/3.4.3/tailwind.min.js"></script>
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -48,18 +48,19 @@
             .popup {
                 position: fixed;
                 background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 228, 181, 0.95));
-                border-radius: 16px;
-                padding: 18px 22px;
+                border-radius: 20px;
+                padding: 15px 20px;
                 box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3);
                 transform: scale(0);
                 animation: popupAnimation 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
                 z-index: 1000;
                 backdrop-filter: blur(8px);
                 border: 2px solid rgba(255, 255, 255, 0.6);
-                min-width: 160px;
-                max-width: 80vw;
-                font-size: 14px;
-                touch-action: manipulation;
+                min-width: 180px;
+                max-width: 280px;
+                /* 移动端适配 */
+                width: 70vw;
+                max-width: 280px;
             }
             
             .popup::before {
@@ -117,7 +118,7 @@
     </audio>
     
     <!-- 将视频源路径改为相对路径 -->
-    <video id="background" class="fixed inset-0 z-0 object-cover w-full h-full" autoplay muted loop playsinline preload="auto">
+    <video id="background" class="fixed inset-0 z-0 object-cover w-full h-full" autoplay muted loop playsinline>
         <source src="荣幸.mp4" type="video/mp4">
     </video>
     
@@ -213,10 +214,7 @@
         bgMusic.volume = 0.5;
         
         // 音乐控制
-        musicToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
+        musicToggle.addEventListener('click', () => {
             if (bgMusic.paused) {
                 bgMusic.play().catch(e => {
                     console.log('音频播放需要用户交互');
@@ -227,13 +225,6 @@
                 musicIcon.className = 'fa fa-volume-off';
             }
         });
-        
-        // 移动设备触摸优化
-        musicToggle.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            // 触摸事件处理
-        }, { passive: false });
         
         // 尝试在用户交互后自动播放背景音乐（浏览器自动播放策略要求）
         document.addEventListener('click', () => {
@@ -254,17 +245,11 @@
         
         // 创建雪花效果
         function createSnowflake() {
-            // 性能优化：限制最大雪花数量
-            if (document.querySelectorAll('.snowflake').length > 100) {
-                return;
-            }
-            
             const snowflake = document.createElement('div');
             snowflake.className = 'snowflake';
             
-            // 移动设备优化：更小的雪花
-            const baseSize = window.innerWidth < 480 ? 3 : 5;
-            const size = Math.random() * 8 + baseSize;
+            // 随机大小
+            const size = Math.random() * 10 + 5;
             snowflake.style.width = `${size}px`;
             snowflake.style.height = `${size}px`;
             
@@ -274,9 +259,8 @@
             // 随机透明度
             snowflake.style.opacity = Math.random() * 0.8 + 0.2;
             
-            // 移动设备优化：调整降落速度
-            const baseDuration = window.innerWidth < 480 ? 8 : 10;
-            const duration = Math.random() * 8 + baseDuration;
+            // 随机降落速度
+            const duration = Math.random() * 10 + 10;
             snowflake.style.animationDuration = `${duration}s`;
             
             // 随机延迟
@@ -289,40 +273,20 @@
             
             // 移除雪花
             setTimeout(() => {
-                try {
-                    snowflake.remove();
-                } catch (e) {
-                    console.log('移除雪花时出错:', e);
-                }
+                snowflake.remove();
             }, duration * 1000);
         }
         
-        // 自动生成雪花 - 移动设备优化频率
-        const snowInterval = window.innerWidth < 480 ? 300 : 200;
-        setInterval(createSnowflake, snowInterval);
+        // 自动生成雪花 - 减少移动设备上的频率
+        const isMobile = window.innerWidth < 768;
+        setInterval(createSnowflake, isMobile ? 500 : 200);
         
         // 点击屏幕生成更多雪花
         document.addEventListener('click', () => {
-            // 性能优化：限制每次生成的雪花数量
-            const currentSnowflakes = document.querySelectorAll('.snowflake').length;
-            if (currentSnowflakes < 200) {
-                const count = window.innerWidth < 480 ? 5 : 10; // 移动设备减少数量
-                for (let i = 0; i < count; i++) {
-                    createSnowflake();
-                }
+            for (let i = 0; i < 10; i++) {
+                createSnowflake();
             }
         });
-        
-        // 触摸设备支持
-        document.addEventListener('touchstart', () => {
-            const currentSnowflakes = document.querySelectorAll('.snowflake').length;
-            if (currentSnowflakes < 200) {
-                const count = window.innerWidth < 480 ? 5 : 10;
-                for (let i = 0; i < count; i++) {
-                    createSnowflake();
-                }
-            }
-        }, { passive: true });
         
         // 创建祝福弹窗 - 美化样式并使用男生对女生的慰问语
         function createBlessingPopup() {
@@ -336,50 +300,43 @@
             const icons = ['fa-heart', 'fa-heartbeat', 'fa-star', 'fa-sun-o', 'fa-coffee', 'fa-gift', 'fa-heart-o', 'fa-star-o'];
             const randomIcon = icons[Math.floor(Math.random() * icons.length)];
             
-            // 根据屏幕宽度调整字体大小
-            const fontSize = window.innerWidth < 480 ? '12px' : '14px';
-            
             popup.innerHTML = `
                 <div class="relative">
                     <div class="absolute -top-4 -right-4 text-2xl text-primary opacity-80">
                         <i class="fa ${randomIcon}"></i>
                     </div>
-                    <div class="flex items-center gap-2 p-1">
-                        <span class="text-primary">💖</span>
-                        <p class="text-gray-800 font-medium leading-relaxed" style="font-family: 'Microsoft YaHei', sans-serif; font-size: ${fontSize};">
+                    <div class="flex items-center gap-3 p-2">
+                        <span class="text-primary text-lg">💖</span>
+                        <p class="text-gray-800 font-medium leading-relaxed" style="font-family: 'Microsoft YaHei', sans-serif;">
                             ${blessing}
                         </p>
                     </div>
                 </div>
             `;
             
-            // 随机位置 - 确保不会超出屏幕，移动设备优化
-            const popupWidth = window.innerWidth < 480 ? 160 : 240;
-            const popupHeight = window.innerHeight < 600 ? 80 : 100;
-            const left = Math.random() * (window.innerWidth - popupWidth - 20) + 10;
-            const top = Math.random() * (window.innerHeight - popupHeight - 20) + 10;
+            // 随机位置 - 确保不会超出屏幕
+            const popupWidth = isMobile ? 220 : 280; // 调整弹窗宽度估计值
+            const popupHeight = isMobile ? 100 : 120; // 调整弹窗高度估计值
+            const left = Math.random() * (window.innerWidth - popupWidth);
+            const top = Math.random() * (window.innerHeight - popupHeight);
             popup.style.left = `${left}px`;
             popup.style.top = `${top}px`;
             
-            // 随机大小 - 移动设备优化
-            const scale = window.innerWidth < 480 ? 
-                (Math.random() * 0.2 + 0.8) : 
-                (Math.random() * 0.3 + 0.9);
+            // 随机大小 - 移动设备使用更大的基础缩放
+            const scale = isMobile ? (Math.random() * 0.2 + 0.95) : (Math.random() * 0.3 + 0.9);
             popup.style.transform = `scale(${scale})`;
             
             // 添加随机旋转角度使布局更自然
-            const rotation = Math.random() * 8 - 4; // -4度到4度之间的随机旋转（移动设备缩小范围）
+            const rotation = Math.random() * 10 - 10; // -5度到5度之间的随机旋转
             popup.style.transform += ` rotate(${rotation}deg)`;
             
             // 增加z-index使新弹窗在上方
             popup.style.zIndex = 1000 + document.querySelectorAll('.popup').length;
             
-            // 添加交互动画效果
+            // 添加hover效果
             popup.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
-            
-            // 鼠标悬停效果
             popup.addEventListener('mouseenter', function() {
-                this.style.transform = `scale(${scale * 1.2}) rotate(${rotation}deg)`;
+                this.style.transform = `scale(${scale * 1.25}) rotate(${rotation}deg)`;
                 this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(236, 72, 153, 0.4)';
             });
             
@@ -388,88 +345,20 @@
                 this.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3)';
             });
             
-            // 触摸设备支持
-            popup.addEventListener('touchstart', function() {
-                this.style.transform = `scale(${scale * 1.2}) rotate(${rotation}deg)`;
-                this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(236, 72, 153, 0.4)';
-            }, { passive: true });
-            
-            popup.addEventListener('touchend', function() {
-                this.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
-                this.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(236, 72, 153, 0.3)';
-            }, { passive: true });
-            
             document.body.appendChild(popup);
-            
-            // 移动设备上添加自动移除，避免过多弹窗堆积
-            if (window.innerWidth < 480) {
-                setTimeout(() => {
-                    try {
-                        // 添加淡出动画
-                        popup.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                        popup.style.opacity = '0';
-                        popup.style.transform = `scale(${scale * 0.8}) rotate(${rotation}deg)`;
-                        
-                        setTimeout(() => {
-                            if (popup.parentNode) {
-                                popup.parentNode.removeChild(popup);
-                            }
-                        }, 500);
-                    } catch (e) {
-                        console.log('移除弹窗时出错:', e);
-                    }
-                }, 5000); // 5秒后自动移除
-            }
         }
         
-        // 定期创建祝福弹窗 - 网页打开3秒后才开始弹窗，移动设备优化
-        const popupInterval = window.innerWidth < 480 ? 1500 : 700; // 移动设备降低弹窗频率
-        
+        // 定期创建祝福弹窗 - 网页打开3秒后才开始弹窗，移动设备减少频率
         setTimeout(() => {
-            setInterval(() => {
-                // 限制弹窗数量，避免过多堆积
-                const currentPopups = document.querySelectorAll('.popup').length;
-                if (currentPopups < 5) { // 最多5个弹窗同时存在
-                    createBlessingPopup();
-                }
-            }, popupInterval);
+            setInterval(createBlessingPopup, isMobile ? 1500 : 700);
         }, 3000);
         
-        // 页面加载时生成初始雪花 - 移动设备优化
+        // 页面加载时生成初始雪花
         window.addEventListener('load', () => {
-            const initialCount = window.innerWidth < 480 ? 30 : 50; // 移动设备减少初始雪花数量
-            for (let i = 0; i < initialCount; i++) {
+            for (let i = 0; i < 50; i++) {
                 createSnowflake();
             }
         });
-        
-        // 移动设备旋转时重新调整布局
-        window.addEventListener('resize', () => {
-            // 移除过多的弹窗
-            const popups = document.querySelectorAll('.popup');
-            const maxPopups = window.innerWidth < 480 ? 3 : 5;
-            if (popups.length > maxPopups) {
-                for (let i = maxPopups; i < popups.length; i++) {
-                    try {
-                        popups[i].style.transition = 'opacity 0.3s ease';
-                        popups[i].style.opacity = '0';
-                        setTimeout(() => popups[i].remove(), 300);
-                    } catch (e) {
-                        console.log('移除弹窗时出错:', e);
-                    }
-                }
-            }
-        });
-        
-        // 移动设备优化：禁止双击缩放
-        document.addEventListener('dblclick', (e) => {
-            if (window.innerWidth < 480) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-        
-        // 优化移动设备滚动行为
-        document.body.style.touchAction = 'manipulation';
     </script>
 </body>
 </html>
